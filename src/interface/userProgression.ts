@@ -1,4 +1,4 @@
-export interface UserModuleProgress {
+export interface UserProgression {
   id: number;
   moduleId: number;
   userId: number;
