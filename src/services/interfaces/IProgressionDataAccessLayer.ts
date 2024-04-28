@@ -1,14 +1,14 @@
 import { QueryResult } from 'mysql2';
-import { ModuleStatus } from '../enum/courseModuleStatus.enum';
+import { ModuleProgression } from './ModuleProgression';
 
 export interface IProgressionDataAccessLayer {
   getModuleProgressionForUser(
     moduleId: string,
     userId: string
-  ): Promise<QueryResult>;
+  ): Promise<ModuleProgression | void>;
   updateModuleProgressionForUser(
     moduleId: string,
     userId: string,
-    moduleProgression: ModuleStatus
+    moduleProgression: string
   ): Promise<QueryResult>;
 }

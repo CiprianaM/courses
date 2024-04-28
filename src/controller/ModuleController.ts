@@ -5,8 +5,9 @@ import { HttpResponse } from '../domain/response';
 import { Status } from '../enum/status.enum';
 import { ICourseController } from './interfaces/ICourseController';
 import { QueryResult } from 'mysql2';
-import { IModuleController } from './interfaces/ICoduleController';
+import { IModuleController } from './interfaces/IModuleController';
 import { IModuleDataAccessLayer } from '../services/interfaces/IModuleDataAccessLayer';
+import { ModuleWithStatus } from '../services/interfaces/Module';
 
 export class ModuleController implements IModuleController {
   constructor(private readonly dataAccessLayer: IModuleDataAccessLayer) {}
@@ -19,7 +20,10 @@ export class ModuleController implements IModuleController {
     );
   }
 
-  private sendSuccessResult(res: Response, result: QueryResult) {
+  private sendSuccessResult(
+    res: Response,
+    result: QueryResult | ModuleWithStatus[]
+  ) {
     res
       .status(Code.OK)
       .send(new HttpResponse(Code.OK, Status.OK, 'Modules retrieved', result));
@@ -69,7 +73,8 @@ export class ModuleController implements IModuleController {
     try {
       const result = await this.dataAccessLayer.updateModuleStatus(
         req.params.moduleId,
-        req.params.userId
+        req.params.userId,
+        req.body.status
       );
       this.sendSuccessResult(res, result);
     } catch (error: unknown) {

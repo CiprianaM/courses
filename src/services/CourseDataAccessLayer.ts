@@ -2,7 +2,6 @@ import { Pool, QueryResult, createPool } from 'mysql2/promise';
 import { Configuration } from './interfaces/Configuration';
 import { Course } from './interfaces/Course';
 import { ICourseDataAccessLayer } from './interfaces/ICourseDataAccessLayer';
-import { COURSE_QUERY } from '../query/course';
 import { CourseQuery } from '../query/interfaces/courseQuery';
 
 export class CourseDataAccessLayer implements ICourseDataAccessLayer {
@@ -10,14 +9,14 @@ export class CourseDataAccessLayer implements ICourseDataAccessLayer {
 
   constructor(
     private readonly configuration: Configuration,
-    query: CourseQuery
+    private readonly queries: CourseQuery
   ) {
     this.pool = createPool(this.configuration);
   }
 
   async getCourses(): Promise<QueryResult> {
     try {
-      const [rows] = await this.pool.query(COURSE_QUERY.SELECT_COURSES);
+      const [rows] = await this.pool.query(this.queries.SELECT_COURSES);
       return rows;
     } catch (error) {
       console.error('Error executing query:', error);
@@ -27,7 +26,7 @@ export class CourseDataAccessLayer implements ICourseDataAccessLayer {
 
   async getCourse(courseId: string): Promise<QueryResult> {
     try {
-      const [rows] = await this.pool.query(COURSE_QUERY.SELECT_COURSE, [
+      const [rows] = await this.pool.query(this.queries.SELECT_COURSE, [
         courseId,
       ]);
       return rows;
@@ -38,7 +37,7 @@ export class CourseDataAccessLayer implements ICourseDataAccessLayer {
   }
 
   private async processUpdateCourse(course: Course, courseId: string) {
-    await this.pool.query(COURSE_QUERY.UPDATE_COURSE, [
+    await this.pool.query(this.queries.UPDATE_COURSE, [
       ...Object.values(course),
       courseId,
     ]);

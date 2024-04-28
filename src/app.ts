@@ -5,7 +5,7 @@ import { Code } from './enum/code.enum';
 import { HttpResponse } from './domain/response';
 import { Status } from './enum/status.enum';
 import { ICourseController } from './controller/interfaces/ICourseController';
-import { IModuleController } from './controller/interfaces/ICoduleController';
+import { IModuleController } from './controller/interfaces/IModuleController';
 
 export class App {
   private readonly app: Application;
@@ -44,7 +44,7 @@ export class App {
     this.app.get('/modules/:moduleId/:userId', (req, res) =>
       this.moduleController.getModule(req, res)
     );
-    this.app.put('/modules/:moduleId/:userId', (req, res) =>
+    this.app.patch('/modules/:moduleId/:userId', (req, res) =>
       this.moduleController.updateModuleStatusForUser(req, res)
     );
     this.app.get('/modules/:courseId', (req, res) =>

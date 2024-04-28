@@ -3,6 +3,8 @@ import { Configuration } from './interfaces/Configuration';
 import { IModuleDataAccessLayer } from './interfaces/IModuleDataAccessLayer';
 import { ModuleQuery } from '../query/interfaces/moduleQuery';
 import { IProgressionDataAccessLayer } from './interfaces/IProgressionDataAccessLayer';
+import { ModuleStatus } from './enum/courseModuleStatus.enum';
+import { ModuleWithStatus } from './interfaces/Module';
 
 export class ModuleDataAccessLayer implements IModuleDataAccessLayer {
   private readonly pool: Pool;
@@ -28,13 +30,32 @@ export class ModuleDataAccessLayer implements IModuleDataAccessLayer {
     }
   }
 
-  async getModule(moduleId: string, userId: string): Promise<QueryResult> {
+  async getModule(
+    moduleId: string,
+    userId: string
+  ): Promise<ModuleWithStatus[]> {
     try {
       const [rows] = await this.pool.query(this.queries.SELECT_MODULE, [
         moduleId,
         userId,
       ]);
-      return rows;
+      if (Array.isArray(rows) && rows.length) {
+        const moduleStatus =
+          await this.moduleProgression.getModuleProgressionForUser(
+            moduleId,
+            userId
+          );
+
+        const status = moduleStatus
+          ? moduleStatus.status
+          : ModuleStatus.NOT_STARTED;
+        const module = {
+          ...rows[0],
+          status,
+        } as ModuleWithStatus;
+        return [module];
+      }
+      return [];
     } catch (error) {
       console.error('Error executing query:', error);
       throw error;
@@ -43,12 +64,14 @@ export class ModuleDataAccessLayer implements IModuleDataAccessLayer {
 
   async updateModuleStatus(
     moduleId: string,
-    userId: string
+    userId: string,
+    moduleProgression: string
   ): Promise<QueryResult> {
     try {
-      const rows = await this.moduleProgression.getModuleProgressionForUser(
+      const rows = await this.moduleProgression.updateModuleProgressionForUser(
         moduleId,
-        userId
+        userId,
+        moduleProgression
       );
       return rows;
     } catch (error) {

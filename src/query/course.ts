@@ -1,4 +1,6 @@
-export const COURSE_QUERY = {
+import { CourseQuery } from './interfaces/courseQuery';
+
+export const COURSE_QUERY: CourseQuery = {
   SELECT_COURSES: 'SELECT * FROM courses ORDER BY created_at DESC LIMIT 50',
   SELECT_COURSE: 'SELECT * FROM courses WHERE id = ?',
   UPDATE_COURSE:
