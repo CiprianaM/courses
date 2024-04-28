@@ -1,4 +1,5 @@
 import { App } from './app';
+import { Connection } from './config/ConnectionPool';
 import { configuration } from './config/mysql.config';
 import { CourseController } from './controller/CourseController';
 import { ModuleController } from './controller/ModuleController';
@@ -10,10 +11,10 @@ import { CourseDataAccessLayer } from './services/CourseDataAccessLayer';
 import { ModuleDataAccessLayer } from './services/ModuleDataAccessLayer';
 import { ProgressionDataAccessLayer } from './services/ProgressionDataAccessLayer';
 
-const courseDataAccessLayer = new CourseDataAccessLayer(
-  configuration,
-  COURSE_QUERY
-);
+const connectionPool = new Connection(configuration);
+const pool = connectionPool.createConnection();
+
+const courseDataAccessLayer = new CourseDataAccessLayer(pool, COURSE_QUERY);
 const progressionDataAccessLayer = new ProgressionDataAccessLayer(
   configuration,
   USER_PROGRESSION_QUERY

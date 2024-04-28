@@ -1,18 +1,14 @@
-import { Pool, QueryResult, createPool } from 'mysql2/promise';
+import { Pool, QueryResult } from 'mysql2/promise';
 import { Configuration } from './interfaces/Configuration';
 import { Course } from './interfaces/Course';
 import { ICourseDataAccessLayer } from './interfaces/ICourseDataAccessLayer';
 import { CourseQuery } from '../query/interfaces/courseQuery';
 
 export class CourseDataAccessLayer implements ICourseDataAccessLayer {
-  private readonly pool: Pool;
-
   constructor(
-    private readonly configuration: Configuration,
+    private readonly pool: Pool,
     private readonly queries: CourseQuery
-  ) {
-    this.pool = createPool(this.configuration);
-  }
+  ) {}
 
   async getCourses(): Promise<QueryResult> {
     try {
