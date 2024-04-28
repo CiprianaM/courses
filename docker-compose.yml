@@ -1,0 +1,46 @@
+services:
+  msqlcoursesdb:
+    image: mysql:8.0
+    container_name: msqlcoursescontainer
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    volumes:
+      - ./dbinit/init.sql:/docker-entrypoint-initdb.d/0_init.sql
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    environment:
+      MYSQL_DATABASE: coursesdb
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: letmein
+      MYSQL_ROOT_PASSWORD: letmein
+      SERVICE_TAGS: dev
+      SERVICE_NAME: msqlcoursesdb
+    networks:
+      - internalnet
+
+  mynodeapp:
+    container_name: mynodeappcontainer
+    build: .
+    image: mynodeapp:v1
+    environment:
+      DB_HOST: msqlcoursesdb
+      DB_USER: 'root'
+      DB_PASSWORD: 'letmein'
+      DB_NAME: coursesdb
+      DB_PORT: 3306
+      DB_CONNECTION_LIMIT: 10
+      SERVER_PORT: 3000
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    depends_on:
+      - msqlcoursesdb
+    networks:
+      - internalnet
+
+networks:
+  internalnet:
+    driver: bridge
