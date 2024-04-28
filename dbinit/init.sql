@@ -46,11 +46,12 @@ CREATE TABLE user_progression (
     status ENUM('started', 'completed') NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (module_id) REFERENCES modules(id)
+    FOREIGN KEY (module_id) REFERENCES modules(id),
+    CONSTRAINT UNIQUE (user_id, module_id)
 );
 
 -- Inserting two users into the `user` table
-INSERT INTO user (first_name, last_name, email) VALUES
+INSERT INTO users (first_name, last_name, email) VALUES
 ('John', 'Doe', 'john.doe@example.com'),
 ('Jane', 'Smith', 'jane.smith@example.com');
 
@@ -91,6 +92,15 @@ INSERT INTO modules (name, course_id, duration, position) VALUES
 ('Module 1: Setting Financial Goals', 5, 60, 1),
 ('Module 2: Budgeting for Families', 5, 90, 2),
 ('Module 3: Estate Planning', 5, 120, 3);
+
+-- Populating user_progression table with 5 records
+INSERT INTO user_progression (user_id, module_id, status) VALUES
+(1, 1, 'started'),
+(1, 2, 'completed'),
+(2, 1, 'started'),
+(2, 2, 'started'),
+(2, 3, 'completed');
+
 
 DELIMITER //
 CREATE PROCEDURE create_and_return(IN name VARCHAR(255), IN likes INTEGER, IN instructor VARCHAR(255), IN instructor_image_url VARCHAR(255))
