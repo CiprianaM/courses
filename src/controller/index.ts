@@ -1,22 +1,11 @@
-import { getCourses, getCourse, updateCourseLikes } from './course.controller';
-import {
+export { getCourses, getCourse, updateCourseLikes } from './course.controller';
+export {
   getModulesForCourse,
   getModule,
   updateModuleStatusForUser,
 } from './module.controller';
 
-import {
+export {
   getCompletedCoursesForUser,
   getStartedCoursesForUser,
 } from './userprogression.controller';
-
-export default {
-  getCourses,
-  getCourse,
-  updateCourseLikes,
-  getModulesForCourse,
-  getModule,
-  updateModuleStatusForUser,
-  getCompletedCoursesForUser,
-  getStartedCoursesForUser,
-};
